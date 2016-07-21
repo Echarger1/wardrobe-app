@@ -46,13 +46,17 @@ namespace WardrobeApp.Controllers
                                   where item.Type.TypeName == "Bottom"
                                   select item;
             var possibleShoes = from item in db.WardrobeItems
-                                where item.Type.TypeName == "Shoe"
+                                where item.Type.TypeName == "Shoes"
                                 select item;
+
+            var possibleAccessories = from item in db.WardrobeItems
+                                      where item.Type.TypeName == "Accessories"
+                                      select item;
 
             ViewBag.TopID = new SelectList(possibleTops, "WardrobeItemID", "Name");
             ViewBag.BottomID = new SelectList(possibleBottoms, "WardrobeItemID", "Name");
             ViewBag.ShoeID = new SelectList(possibleShoes, "WardrobeItemID", "Name");
-
+            ViewBag.AccessoryIDs = new MultiSelectList(possibleAccessories, "WardrobeItemID", "Name");
             return View();
         }
 
@@ -61,18 +65,37 @@ namespace WardrobeApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "OutfitID,TopID,BottomID,ShoeID")] Outfit outfit)
+        public ActionResult Create([Bind(Include = "OutfitID,TopID,BottomID,ShoeID")] Outfit outfit, int[] accessoryIDs)
         {
             if (ModelState.IsValid)
             {
+                foreach (int accessoryID in accessoryIDs)
+                {
+                    outfit.Accessories.Add(db.WardrobeItems.Find(accessoryID));
+                }
                 db.Outfits.Add(outfit);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.TopID = new SelectList(db.WardrobeItems, "WardrobeItemID", "Name", outfit.TopID);
-            ViewBag.BottomID = new SelectList(db.WardrobeItems, "WardrobeItemID", "Name", outfit.BottomID);
-            ViewBag.ShoeID = new SelectList(db.WardrobeItems, "WardrobeItemID", "Name", outfit.ShoeID);
+            var possibleTops = from item in db.WardrobeItems
+                               where item.Type.TypeName == "Top"
+                               select item;
+            var possibleBottoms = from item in db.WardrobeItems
+                                  where item.Type.TypeName == "Bottom"
+                                  select item;
+            var possibleShoes = from item in db.WardrobeItems
+                                where item.Type.TypeName == "Shoes"
+                                select item;
+
+            var possibleAccessories = from item in db.WardrobeItems
+                                      where item.Type.TypeName == "Accessories"
+                                      select item;
+
+            ViewBag.TopID = new SelectList(possibleTops, "WardrobeItemID", "Name", outfit.TopID);
+            ViewBag.BottomID = new SelectList(possibleBottoms, "WardrobeItemID", "Name", outfit.BottomID);
+            ViewBag.ShoeID = new SelectList(possibleShoes, "WardrobeItemID", "Name", outfit.ShoeID);
+            ViewBag.AccessoryIDs = new MultiSelectList(possibleAccessories, "WardrobeItemID", "Name");
             return View(outfit);
         }
 
