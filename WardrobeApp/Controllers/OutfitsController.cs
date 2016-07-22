@@ -149,6 +149,7 @@ namespace WardrobeApp.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Outfit outfit = db.Outfits.Find(id);
+            outfit.Accessories.Clear();
             db.Outfits.Remove(outfit);
             db.SaveChanges();
             return RedirectToAction("Index");
