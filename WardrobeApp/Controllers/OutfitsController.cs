@@ -63,7 +63,7 @@ namespace WardrobeApp.Controllers
             ViewBag.TopID = new SelectList(possibleTops, "WardrobeItemID", "Name");
             ViewBag.BottomID = new SelectList(possibleBottoms, "WardrobeItemID", "Name");
             ViewBag.ShoeID = new SelectList(possibleShoes, "WardrobeItemID", "Name");
-            ViewBag.AccessoryID = new SelectList(possibleAccessories, "WardrobeItemID", "Name");
+            ViewBag.AccessoryID = new MultiSelectList(possibleAccessories, "WardrobeItemID", "Name");
             return View();
         }
 
@@ -72,10 +72,14 @@ namespace WardrobeApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "OutfitID,TopID,BottomID,ShoeID")] Outfit outfit)
+        public ActionResult Create([Bind(Include = "OutfitID,TopID,BottomID,ShoeID")] Outfit outfit, int[] AccessoryID)
         {
             if (ModelState.IsValid)
             {
+                foreach (var item in AccessoryID)
+                {
+                    outfit.Accessories.Add(db.WardrobeItems.Find(item));
+                }
                 db.Outfits.Add(outfit);
                 db.SaveChanges();
                 return RedirectToAction("Index");
