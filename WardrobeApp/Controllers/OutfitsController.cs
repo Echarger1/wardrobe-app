@@ -39,9 +39,31 @@ namespace WardrobeApp.Controllers
         // GET: Outfits/Create
         public ActionResult Create()
         {
-            ViewBag.TopID = new SelectList(db.WardrobeItems, "WardrobeItemID", "Name");
-            ViewBag.BottomID = new SelectList(db.WardrobeItems, "WardrobeItemID", "Name");
-            ViewBag.ShoeID = new SelectList(db.WardrobeItems, "WardrobeItemID", "Name");
+            var possibleTops = from item in db.WardrobeItems
+                                   // where item.Type.TypeName == "Top"
+                               where item.TypeID == 1
+                               select item;
+
+            var possibleBottoms = from item in db.WardrobeItems
+                                   // where item.Type.TypeName == "Top"
+                               where item.TypeID == 2
+                               select item;
+
+            var possibleShoes = from item in db.WardrobeItems
+                                   // where item.Type.TypeName == "Top"
+                               where item.TypeID == 3
+                               select item;
+
+            var possibleAccessories = from item in db.WardrobeItems
+                                   // where item.Type.TypeName == "Top"
+                               where item.TypeID == 4
+                               select item;
+
+
+            ViewBag.TopID = new SelectList(possibleTops, "WardrobeItemID", "Name");
+            ViewBag.BottomID = new SelectList(possibleBottoms, "WardrobeItemID", "Name");
+            ViewBag.ShoeID = new SelectList(possibleShoes, "WardrobeItemID", "Name");
+            ViewBag.AccessoryID = new SelectList(possibleAccessories, "WardrobeItemID", "Name");
             return View();
         }
 
