@@ -42,8 +42,13 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Accessories, "Accessories", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
+<<<<<<< HEAD
                 @Html.ListBox("AccessoryIDs", (MultiSelectList)ViewBag.AccessoryIDs, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Accessories, "", new { @class = "text-danger"})
+=======
+                @Html.ListBox("AccessoryID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Accessories, "", new { @class = "text-danger" })
+>>>>>>> manytomany
             </div>
         </div>
 

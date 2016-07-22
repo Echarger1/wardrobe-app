@@ -40,23 +40,29 @@ namespace WardrobeApp.Controllers
         public ActionResult Create()
         {
             var possibleTops = from item in db.WardrobeItems
-                               where item.Type.TypeName == "Top"
+                                   // where item.Type.TypeName == "Top"
+                               where item.TypeID == 1
                                select item;
+
             var possibleBottoms = from item in db.WardrobeItems
-                                  where item.Type.TypeName == "Bottom"
-                                  select item;
+                                   // where item.Type.TypeName == "Top"
+                               where item.TypeID == 2
+                               select item;
+
             var possibleShoes = from item in db.WardrobeItems
-                                where item.Type.TypeName == "Shoes"
-                                select item;
+                                   // where item.Type.TypeName == "Top"
+                               where item.TypeID == 3
+                               select item;
 
             var possibleAccessories = from item in db.WardrobeItems
-                                      where item.Type.TypeName == "Accessories"
-                                      select item;
+                                   // where item.Type.TypeName == "Top"
+                               where item.TypeID == 4
+                               select item;
 
             ViewBag.TopID = new SelectList(possibleTops, "WardrobeItemID", "Name");
             ViewBag.BottomID = new SelectList(possibleBottoms, "WardrobeItemID", "Name");
             ViewBag.ShoeID = new SelectList(possibleShoes, "WardrobeItemID", "Name");
-            ViewBag.AccessoryIDs = new MultiSelectList(possibleAccessories, "WardrobeItemID", "Name");
+            ViewBag.AccessoryID = new MultiSelectList(possibleAccessories, "WardrobeItemID", "Name");
             return View();
         }
 
@@ -65,13 +71,13 @@ namespace WardrobeApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "OutfitID,TopID,BottomID,ShoeID")] Outfit outfit, int[] accessoryIDs)
+        public ActionResult Create([Bind(Include = "OutfitID,TopID,BottomID,ShoeID")] Outfit outfit, int[] AccessoryID)
         {
             if (ModelState.IsValid)
             {
-                foreach (int accessoryID in accessoryIDs)
+                foreach (var item in AccessoryID)
                 {
-                    outfit.Accessories.Add(db.WardrobeItems.Find(accessoryID));
+                    outfit.Accessories.Add(db.WardrobeItems.Find(item));
                 }
                 db.Outfits.Add(outfit);
                 db.SaveChanges();
@@ -157,6 +163,7 @@ namespace WardrobeApp.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Outfit outfit = db.Outfits.Find(id);
+            outfit.Accessories.Clear();
             db.Outfits.Remove(outfit);
             db.SaveChanges();
             return RedirectToAction("Index");
